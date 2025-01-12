@@ -1,0 +1,75 @@
+.HomeParentContainer {
+  width: 100%;
+  height: 95vh;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 0;
+
+  .sidebar {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(25, 25, 25);
+    p {
+      font-size: 2vh;
+      margin: 1vh;
+      cursor: pointer;
+    }
+  }
+  .mainbodycontainer {
+    overflow: auto;
+    width: 100%;
+    height: 95vh;
+    background-color: rgb(0, 0, 0);
+    .widgetLinkscontainer {
+      display: flex;
+      align-items: center;
+      font-size: 2vh;
+      gap: 1vw;
+      .chips {
+        padding: 0.5vh 1vw;
+        border-radius: 99px;
+        border: 1px solid rgb(72, 72, 72);
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+          border: 1px solid rgb(185, 185, 185);
+        }
+      }
+    }
+    .widgetContainer {
+      width: 100%;
+      min-height: 100vh;
+      background-color: rgb(37, 37, 37);
+      border-radius: 2vw;
+
+      .tabslinksContainer {
+        display: flex;
+        align-items: center;
+        font-size: 2vh;
+        gap: 1vw;
+
+        .chips {
+          padding: 0.5vh 1vw;
+          border-radius: 99px;
+          border: 1px solid rgb(72, 72, 72);
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
+            border: 1px solid rgb(185, 185, 185);
+          }
+        }
+
+      }
+      .tabscontainer{
+       margin: 5vh 2vw;
+       width: 100%;
+       box-sizing: border-box;
+       background-color: red;
+       height: 50vh;
+    
+      }
+    }
+  }
+}
+ 
