@@ -1,7 +1,7 @@
 import React from "react";
 import "./Home.scss";
 import { Link, Outlet, useNavigate } from "react-router";
-import Linkx from "../Linkx";
+import Linx from "../Linx";
 const sidebaritemList = ["logistics_movement", "performance_and_monitoring"];
 const Home = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Home = () => {
       <div className="sidebar">
         {sidebaritemList.map((page) => (
           <p>
-            <Linkx to={page}> {page.replaceAll("_", " ")}</Linkx>
+            <Linx to={page}> {page.replaceAll("_", " ")}</Linx>
           </p>
         ))}
       </div>

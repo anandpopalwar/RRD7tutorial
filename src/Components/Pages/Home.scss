@@ -34,6 +34,12 @@
           text-decoration: underline;
           border: 1px solid rgb(185, 185, 185);
         }
+        a {
+          .active {
+            background-color: whitesmoke;
+            color: black;
+          }
+        }
       }
     }
     .widgetContainer {
@@ -41,6 +47,8 @@
       min-height: 100vh;
       background-color: rgb(37, 37, 37);
       border-radius: 2vw;
+      padding: 2vh 3vw;
+      box-sizing: border-box;
 
       .tabslinksContainer {
         display: flex;
@@ -59,17 +67,12 @@
             border: 1px solid rgb(185, 185, 185);
           }
         }
-
       }
-      .tabscontainer{
-       margin: 5vh 2vw;
-       width: 100%;
-       box-sizing: border-box;
-       background-color: red;
-       height: 50vh;
-    
+      .tabscontainer {
+        width: 100%;
+        background-color: rgb(65, 27, 27);
+        height: 50vh;
       }
     }
   }
 }
- 

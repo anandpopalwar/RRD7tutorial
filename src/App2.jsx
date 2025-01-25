@@ -16,7 +16,8 @@ import DCLR from "./Components/Widgets/LogisticsMovement/DCLR/DCLR";
 import { Rail } from "./Components/Widgets/LogisticsMovement/CoalJourneys/Rail";
 import Road from "./Components/Widgets/LogisticsMovement/CoalJourneys/Road";
 import RCR from "./Components/Widgets/LogisticsMovement/CoalJourneys/RCR";
-import Linkx from "./Components/Linkx";
+import Linx from "./Components/Linx";
+import Railform from "./Components/Pages/Railform";
 
 const App2 = () => {
   // const Location = useLocation();
@@ -36,8 +37,8 @@ export default App2;
 const RouteConfig = () => (
   <BrowserRouter>
     <div className="navbar">
-      <Linkx to="/home">Home</Linkx> | <Linkx to="/about">About</Linkx> |{" "}
-      <Linkx to="/setting">Setting</Linkx>
+      <Linx to="/home">Home</Linx> | <Linx to="/about">About</Linx> |{" "}
+      <Linx to="/setting">Setting</Linx>
     </div>
     <Routes>
       <Route path="/" index element={<Navigate to="home" replace />} />
@@ -56,8 +57,15 @@ const RouteConfig = () => (
         </Route>
         <Route path="performance_and_monitoring" element={<PnM />} />
       </Route>
+      <Route path="/railform/:id" element={<Railform />}/>
       <Route path="/about" element={<About />} />
       <Route path="/setting" element={<Setting />} />
     </Routes>
   </BrowserRouter>
 );
+
+export const RR_no = [63, 68, 9, 15, 100]
+
+
+
+//<Navigate to"path" /> event used for redirective the navigation to perticular path 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router";
-import Linkx from "../../../Linkx";
+import Linx from "../../../Linx";
 export const CoalJourneysTabs = ["road", "rail", "rcr"];
 const CoalJourneys = () => {
   const navigate = useNavigate();
@@ -10,9 +10,9 @@ const CoalJourneys = () => {
       <h4>CoalJourneys</h4>
       <div className="tabslinksContainer">
         {CoalJourneysTabs.map((item) => (
-          <div className="chips">
-            <Linkx to={item}>{item}</Linkx>
-          </div>
+          <Linx to={item} className="chips">
+            {item}
+          </Linx>
         ))}
       </div>
       <div className="tabscontainer">

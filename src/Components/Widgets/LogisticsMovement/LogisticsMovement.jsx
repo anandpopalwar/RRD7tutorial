@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router";
-import Linkx from "../../Linkx";
+import Linx from "../../Linx";
 export const LogisticsMovementWidgets = [
   "coal_journey",
   "coal_statement",
@@ -13,9 +13,9 @@ const LogisticsMovement = () => {
       <h4>LogisticsMovement</h4>
       <div className="widgetLinkscontainer">
         {LogisticsMovementWidgets.map((item) => (
-          <div className="chips">
-            <Linkx to={item}>{item}</Linkx>
-          </div>
+          <Linx to={item} className={"chips"}>
+            {item}
+          </Linx>
         ))}
       </div>
       <div className="widgetContainer">
