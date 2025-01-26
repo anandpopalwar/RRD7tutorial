@@ -10,9 +10,9 @@ const Home = () => {
     <div className="HomeParentContainer">
       <div className="sidebar">
         {sidebaritemList.map((page) => (
-          <p>
-            <Linx to={page}> {page.replaceAll("_", " ")}</Linx>
-          </p>
+          <Linx to={page} className={"sidebaritems"}>
+            {page.replaceAll("_", " ")}
+          </Linx>
         ))}
       </div>
       <div className="mainbodycontainer">

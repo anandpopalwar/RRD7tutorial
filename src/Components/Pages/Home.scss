@@ -1,3 +1,7 @@
+a {
+  text-decoration: none;
+}
+
 .HomeParentContainer {
   width: 100%;
   height: 95vh;
@@ -6,13 +10,20 @@
   gap: 0;
 
   .sidebar {
+    padding-top: 2vh;
     width: 100%;
     height: 100%;
     background-color: rgb(25, 25, 25);
-    p {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    box-sizing: border-box;
+
+    .sidebaritems {
       font-size: 2vh;
-      margin: 1vh;
+      padding: 1vh;
       cursor: pointer;
+      border: 1px solid rgb(72, 72, 72);
     }
   }
   .mainbodycontainer {
@@ -20,11 +31,14 @@
     width: 100%;
     height: 95vh;
     background-color: rgb(0, 0, 0);
+    box-sizing: border-box;
+    padding: 1vh 2vw;
     .widgetLinkscontainer {
       display: flex;
       align-items: center;
       font-size: 2vh;
       gap: 1vw;
+      margin: 1vh;
       .chips {
         padding: 0.5vh 1vw;
         border-radius: 99px;
@@ -44,7 +58,7 @@
     }
     .widgetContainer {
       width: 100%;
-      min-height: 100vh;
+      min-height: 80vh;
       background-color: rgb(37, 37, 37);
       border-radius: 2vw;
       padding: 2vh 3vw;

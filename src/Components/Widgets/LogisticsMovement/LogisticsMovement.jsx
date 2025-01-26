@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet } from "react-router";
 import Linx from "../../Linx";
 export const LogisticsMovementWidgets = [
   "coal_journey",
@@ -7,10 +7,9 @@ export const LogisticsMovementWidgets = [
   "dclr",
 ];
 const LogisticsMovement = () => {
-  const navigate = useNavigate();
   return (
     <div>
-      <h4>LogisticsMovement</h4>
+      <div>LogisticsMovement</div>
       <div className="widgetLinkscontainer">
         {LogisticsMovementWidgets.map((item) => (
           <Linx to={item} className={"chips"}>

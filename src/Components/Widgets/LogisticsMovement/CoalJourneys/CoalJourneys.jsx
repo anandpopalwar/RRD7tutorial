@@ -7,7 +7,7 @@ const CoalJourneys = () => {
 
   return (
     <div>
-      <h4>CoalJourneys</h4>
+      <div>CoalJourneys</div>
       <div className="tabslinksContainer">
         {CoalJourneysTabs.map((item) => (
           <Linx to={item} className="chips">
