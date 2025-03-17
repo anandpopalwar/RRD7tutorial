@@ -11,10 +11,10 @@ const Linx = ({ to, children, className = "" }) => {
       className={({ isActive }) =>
         isActive ? className + " active" : className + " not_active"
       }
-      onClick={() => {
-        console.log(location, "location");
-        console.log(to, "Link path");
-      }}
+      // onClick={() => {
+      //   console.log(location, "location");
+      //   console.log(to, "Link path");
+      // }}
     >
       {children}
     </NavLink>

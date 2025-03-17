@@ -1,5 +1,6 @@
-import React, { lazy, Suspense } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import React, { lazy, Suspense, useState } from "react";
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router";
+import { Card } from "./Components/Widgets/PnM/PnM";
 
 const LogisticsMovement = lazy(() =>
   import("./Components/Widgets/LogisticsMovement/LogisticsMovement")
@@ -53,155 +54,303 @@ const App2 = () => (
 
 export default App2;
 
-const RouteConfig = () => (
-  <BrowserRouter>
-    <div
-      className="navbar"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Suspense fallback={renderLoader()}>
-        <Linx to="/home" className="mainlinks">
-          Home
-        </Linx>{" "}
-        |{" "}
-        <Linx className="mainlinks" to="/about">
-          About
-        </Linx>{" "}
-        |{" "}
-        <Linx to="/setting" className="mainlinks">
-          Setting
-        </Linx>
-      </Suspense>
-    </div>
-    <Routes>
-      <Route path="/" index element={<Navigate to="home" replace />} />
-      <Route
-        path="home"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Home />
-          </Suspense>
-        }
+const RouteConfig = () => {
+  const [show, setshow] = useState(false);
+
+  return (
+    <BrowserRouter>
+      <div
+        className="navbar"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+        }}
       >
-        <Route index element={<Navigate to="logistics_movement" replace />} />
+        <ChangePermissionModal
+          {...{
+            show,
+            setshow,
+          }}
+        />
+        <Suspense fallback={renderLoader()}>
+          <Linx to="/home" className="mainlinks">
+            Home
+          </Linx>{" "}
+          |{" "}
+          <Linx to="/about" className="mainlinks">
+            About
+          </Linx>{" "}
+          |{" "}
+          <Linx to="/setting" className="mainlinks">
+            Setting
+          </Linx>
+          <div className="mainlinks" onClick={() => setshow((p) => !p)}>
+            Permissions
+          </div>
+        </Suspense>
+      </div>
+      <Routes>
+        <Route path="/" index element={<Navigate to="/home" replace />} />
         <Route
-          path="logistics_movement"
+          path="/home"
           element={
             <Suspense fallback={renderLoader()}>
-              <LogisticsMovement />
+              <Home />
             </Suspense>
           }
         >
-          <Route index element={<Navigate to="coal_journey" replace />} />
+          <Route index element={<Navigate to="logistics_movement" replace />} />
+
           <Route
-            path="coal_journey"
+            path="logistics_movement"
             element={
               <Suspense fallback={renderLoader()}>
-                <CoalJourneys />
+                <LogisticsMovement />
               </Suspense>
             }
           >
-            <Route index element={<Navigate to="road" replace />} />
+            <Route index element={<Navigate to="coal_journey" replace />} />
+
             <Route
-              path="road"
+              path="coal_journey"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <Road />
+                  <CoalJourneys />
+                </Suspense>
+              }
+            >
+              <Route index element={<Navigate to="road" replace />} />
+
+              <Route
+                path="road"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <Road />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="rail"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <Rail />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="rcr"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <RCR />
+                  </Suspense>
+                }
+              />
+            </Route>
+
+            <Route
+              path="coal_statement"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <CoalStatement />
                 </Suspense>
               }
             />
             <Route
-              path="rail"
+              path="dclr"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <Rail />
-                </Suspense>
-              }
-            />
-            <Route
-              path="rcr"
-              element={
-                <Suspense fallback={renderLoader()}>
-                  <RCR />
+                  <DCLR />
                 </Suspense>
               }
             />
           </Route>
+
           <Route
-            path="coal_statement"
+            path="performance_and_monitoring"
             element={
               <Suspense fallback={renderLoader()}>
-                <CoalStatement />
-              </Suspense>
-            }
-          />
-          <Route
-            path="dclr"
-            element={
-              <Suspense fallback={renderLoader()}>
-                <DCLR />
+                <PnM />
               </Suspense>
             }
           />
         </Route>
         <Route
-          path="performance_and_monitoring"
+          path="/about"
           element={
             <Suspense fallback={renderLoader()}>
-              <PnM />
-            </Suspense>
-          }
-        />
-      </Route>
-      <Route
-        path="/railform"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Railform />
-          </Suspense>
-        }
-      >
-        <Route
-          index
-          element={
-            <Suspense fallback={renderLoader()}>
-              <CreateID />
+              <About />
             </Suspense>
           }
         />
         <Route
-          path=":id"
+          path="/setting"
           element={
             <Suspense fallback={renderLoader()}>
-              <ID />
+              <Setting />
             </Suspense>
           }
         />
-      </Route>
-      <Route
-        path="/about"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <About />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/setting"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Setting />
-          </Suspense>
-        }
-      />
-    </Routes>
-  </BrowserRouter>
-);
+
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={renderLoader()}>
+              <div onClick={() => {}}>
+                <NavLink to={"/home"}>Go to Home page</NavLink>
+              </div>
+            </Suspense>
+          }
+        />
+        <Route
+          path="/railform"
+          element={
+            <Suspense fallback={renderLoader()}>
+              <Railform />
+            </Suspense>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={renderLoader()}>
+                <CreateID />
+              </Suspense>
+            }
+          />
+          <Route
+            path=":id"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <ID />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export const RR_no = [63, 68, 9, 15, 100];
 
-const renderLoader = () => <div>Loading...</div>;
+const renderLoader = () => (
+  <div style={{ fontSize: "5vw", color: "white" }}>Loading...</div>
+);
+
+const ChangePermissionModal = ({ show, setshow }) => {
+  const [permission, setPermission] = useState(permission_obj);
+
+  const [userPermission, setUserPermission] = useState({
+    home: {
+      permissions: { view: true, create: false, edit: false, delete: false },
+      logistics_movement: {
+        permissions: { view: true, create: false, edit: false, delete: false },
+
+        coal_journey: {
+          permissions: { view: true, create: false, edit: true, delete: false },
+
+          road: {
+            permissions: {
+              view: true,
+              create: false,
+              edit: true,
+              delete: false,
+            },
+          },
+        },
+
+        dclr: {
+          permissions: { view: true, create: true, edit: false, delete: false },
+        },
+      },
+    },
+  });
+
+  console.log(userPermission, "userPermission");
+
+  return (
+    <div
+      className="stickytopparent"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
+      {show && (
+        <div className="stickytop">
+          {Object.keys(permission).map((key) => (
+            <Card
+              data={permission[key]}
+              name={key}
+              isChecked={userPermission?.[key]?.["permissions"]?.["view"]}
+              userPermission={userPermission?.[key]}
+              onClick={(d, n) => {
+                let _data = { ...d };
+                console.log(_data, "_data");
+                setUserPermission({ ..._data });
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+const permission_obj = {
+  home: {
+    permissions: { view: true, create: false, edit: false, delete: false },
+    logistics_movement: {
+      permissions: { view: true, create: false, edit: false, delete: false },
+      coal_journey: {
+        permissions: { view: true, create: false, edit: true, delete: false },
+        road: {
+          permissions: { view: true, create: false, edit: true, delete: false },
+        },
+        rail: {
+          permissions: { view: true, create: false, edit: true, delete: false },
+        },
+        rcr: {
+          permissions: { view: true, create: false, edit: true, delete: false },
+        },
+      },
+      coal_statement: {
+        permissions: { view: true, create: false, edit: true, delete: false },
+      },
+      dclr: {
+        permissions: { view: true, create: true, edit: false, delete: false },
+      },
+    },
+    performance_and_monitoring: {
+      permissions: { view: true, create: false, edit: false, delete: false },
+    },
+  },
+  about: {
+    permissions: { view: true, create: false, edit: false, delete: false },
+  },
+  setting: {
+    permissions: { view: true, create: true, edit: true, delete: true },
+  },
+};
+
+// const ReturnRoutes = ({ path }) => {
+//   return;
+//   <>
+
+//     {
+//       permission_obj["home"] &&
+// permission_obj["home"]["permissions"]["view"]
+// &&   Object.keys(permission_obj["home"]).map((page)=>{
+// return page !== "permissions" &&
+
+// })
+//     }
+//   </>;
+// };
+//           {/* {permission_obj["home"] &&
+// permission_obj["home"]["permissions"]["view"]
+// &&   Object.keys(permission_obj["home"]).map((page)=>{
+// return page !== "permissions" &&
+
+// }) */
