@@ -1,6 +1,42 @@
 import React, { lazy, Suspense, useState } from "react";
-import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router";
-import { Card } from "./Components/Widgets/PnM/PnM";
+
+const renderLoader = () => (
+  <div style={{ fontSize: "5vw", color: "white" }}>Loading...</div>
+);
+
+import {
+  BrowserRouter,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Navigate,
+  NavLink,
+  Outlet,
+  Route,
+  RouterProvider,
+  Routes,
+  useNavigation,
+} from "react-router";
+
+const Card = lazy(() =>
+  import("./Components/Widgets/PnM/PnM").then((module) => ({
+    default: module.Card,
+  }))
+);
+const CoalQuality = lazy(() =>
+  import("./Components/Widgets/CoalQuality/CoalQuality")
+);
+const ReceiptQualityAnalysis = lazy(() =>
+  import("./Components/Widgets/CoalQuality/ChildCompo/ReceiptQualityAnalysis")
+);
+const BunkerQualityAnalysis = lazy(() =>
+  import("./Components/Widgets/CoalQuality/ChildCompo/BunkerQualityAnalysis")
+);
+const CoalAnalysis = lazy(() =>
+  import("./Components/Widgets/CoalQuality/ChildCompo/CoalAnalysis")
+);
+const CoalGCVAnalysis = lazy(() =>
+  import("./Components/Widgets/CoalQuality/ChildCompo/CoalGCVAnalysis")
+);
 
 const LogisticsMovement = lazy(() =>
   import("./Components/Widgets/LogisticsMovement/LogisticsMovement")
@@ -54,190 +90,441 @@ const App2 = () => (
 
 export default App2;
 
-const RouteConfig = () => {
+const NavBar = () => {
   const [show, setshow] = useState(false);
 
+  // const navigation = useNavigation();
+  // const isNavigating = Boolean(navigation.location);
+  // console.log(navigation, "navigation");
+  // console.log(isNavigating, "isNavigating");
   return (
-    <BrowserRouter>
-      <div
-        className="navbar"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          position: "relative",
+    <div
+      className="navbar"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+      }}
+    >
+      <ChangePermissionModal
+        {...{
+          show,
+          setshow,
         }}
+      />
+      <Suspense fallback={renderLoader()}>
+        <Linx to="/home" className="mainlinks">
+          Home
+        </Linx>{" "}
+        |{" "}
+        <Linx to="/about" className="mainlinks">
+          About
+        </Linx>{" "}
+        |{" "}
+        <Linx to="/setting" className="mainlinks">
+          Setting
+        </Linx>
+        <div className="mainlinks" onClick={() => setshow((p) => !p)}>
+          Permissions {show ? "open" : "closed"}
+        </div>
+      </Suspense>
+    </div>
+  );
+};
+
+const DocumentBody = () => {
+  const navigation = useNavigation();
+
+  console.log(navigation.state, "navigation");
+  return (
+    <>
+      <NavBar />
+      {navigation.state === "loading" && renderLoader()}
+      <Outlet />
+    </>
+  );
+};
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<DocumentBody />}>
+      <Route path="/" index element={<Navigate to="/home" replace />} />
+      <Route
+        path="/home"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Home />
+          </Suspense>
+        }
       >
-        <ChangePermissionModal
-          {...{
-            show,
-            setshow,
-          }}
-        />
-        <Suspense fallback={renderLoader()}>
-          <Linx to="/home" className="mainlinks">
-            Home
-          </Linx>{" "}
-          |{" "}
-          <Linx to="/about" className="mainlinks">
-            About
-          </Linx>{" "}
-          |{" "}
-          <Linx to="/setting" className="mainlinks">
-            Setting
-          </Linx>
-          <div className="mainlinks" onClick={() => setshow((p) => !p)}>
-            Permissions
-          </div>
-        </Suspense>
-      </div>
-      <Routes>
-        <Route path="/" index element={<Navigate to="/home" replace />} />
+        <Route index element={<Navigate to="logistics_movement" replace />} />
+
         <Route
-          path="/home"
+          path="logistics_movement"
           element={
             <Suspense fallback={renderLoader()}>
-              <Home />
+              <LogisticsMovement />
             </Suspense>
           }
         >
-          <Route index element={<Navigate to="logistics_movement" replace />} />
+          <Route index element={<Navigate to="coal_journey" replace />} />
 
           <Route
-            path="logistics_movement"
+            path="coal_journey"
             element={
               <Suspense fallback={renderLoader()}>
-                <LogisticsMovement />
+                <CoalJourneys />
               </Suspense>
             }
           >
-            <Route index element={<Navigate to="coal_journey" replace />} />
+            <Route index element={<Navigate to="road" replace />} />
 
             <Route
-              path="coal_journey"
+              path="road"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <CoalJourneys />
-                </Suspense>
-              }
-            >
-              <Route index element={<Navigate to="road" replace />} />
-
-              <Route
-                path="road"
-                element={
-                  <Suspense fallback={renderLoader()}>
-                    <Road />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="rail"
-                element={
-                  <Suspense fallback={renderLoader()}>
-                    <Rail />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="rcr"
-                element={
-                  <Suspense fallback={renderLoader()}>
-                    <RCR />
-                  </Suspense>
-                }
-              />
-            </Route>
-
-            <Route
-              path="coal_statement"
-              element={
-                <Suspense fallback={renderLoader()}>
-                  <CoalStatement />
+                  <Road />
                 </Suspense>
               }
             />
             <Route
-              path="dclr"
+              path="rail"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <DCLR />
+                  <Rail />
+                </Suspense>
+              }
+            />
+            <Route
+              path="rcr"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <RCR />
                 </Suspense>
               }
             />
           </Route>
 
           <Route
-            path="performance_and_monitoring"
+            path="coal_statement"
             element={
               <Suspense fallback={renderLoader()}>
-                <PnM />
+                <CoalStatement />
+              </Suspense>
+            }
+          />
+          <Route
+            path="dclr"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <DCLR />
               </Suspense>
             }
           />
         </Route>
         <Route
-          path="/about"
+          path="coal_quality"
           element={
             <Suspense fallback={renderLoader()}>
-              <About />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/setting"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <Setting />
-            </Suspense>
-          }
-        />
-
-        <Route
-          path="*"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <div onClick={() => {}}>
-                <NavLink to={"/home"}>Go to Home page</NavLink>
-              </div>
-            </Suspense>
-          }
-        />
-        <Route
-          path="/railform"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <Railform />
+              <CoalQuality />
             </Suspense>
           }
         >
+          <Route index element={<Navigate to="RQA" replace />} />
+
           <Route
-            index
+            path="RQA"
             element={
               <Suspense fallback={renderLoader()}>
-                <CreateID />
+                <ReceiptQualityAnalysis />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="BQA"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <BunkerQualityAnalysis />
               </Suspense>
             }
           />
           <Route
-            path=":id"
+            path="CA"
             element={
               <Suspense fallback={renderLoader()}>
-                <ID />
+                <CoalAnalysis />
+              </Suspense>
+            }
+          />
+          <Route
+            path="GCVCA"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <CoalGCVAnalysis />
               </Suspense>
             }
           />
         </Route>
-      </Routes>
-    </BrowserRouter>
-  );
-};
+
+        <Route
+          path="performance_and_monitoring"
+          element={
+            <Suspense fallback={renderLoader()}>
+              <PnM />
+            </Suspense>
+          }
+        />
+      </Route>
+      <Route
+        path="/about"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <About />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/setting"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Setting />
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <div onClick={() => {}}>
+              <NavLink to={"/home"}>Go to Home page</NavLink>
+            </div>
+          </Suspense>
+        }
+      />
+      <Route
+        path="/railform"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Railform />
+          </Suspense>
+        }
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={renderLoader()}>
+              <CreateID />
+            </Suspense>
+          }
+        />
+        <Route
+          path=":id"
+          element={
+            <Suspense fallback={renderLoader()}>
+              <ID />
+            </Suspense>
+          }
+        />
+      </Route>
+    </Route>
+  )
+);
+
+const RouteConfig = () => <RouterProvider router={router} />;
+
+// const RouteConfig = () => {
+//   return (
+//     <BrowserRouter>
+//       <NavBar />
+//       <Routes>
+//         <Route path="/" index element={<Navigate to="/home" replace />} />
+//         <Route
+//           path="/home"
+//           element={
+//             <Suspense fallback={renderLoader()}>
+//               <Home />
+//             </Suspense>
+//           }
+//         >
+//           <Route index element={<Navigate to="logistics_movement" replace />} />
+
+//           <Route
+//             path="logistics_movement"
+//             element={
+//               <Suspense fallback={renderLoader()}>
+//                 <LogisticsMovement />
+//               </Suspense>
+//             }
+//           >
+//             <Route index element={<Navigate to="coal_journey" replace />} />
+
+//             <Route
+//               path="coal_journey"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <CoalJourneys />
+//                 </Suspense>
+//               }
+//             >
+//               <Route index element={<Navigate to="road" replace />} />
+
+//               <Route
+//                 path="road"
+//                 element={
+//                   <Suspense fallback={renderLoader()}>
+//                     <Road />
+//                   </Suspense>
+//                 }
+//               />
+//               <Route
+//                 path="rail"
+//                 element={
+//                   <Suspense fallback={renderLoader()}>
+//                     <Rail />
+//                   </Suspense>
+//                 }
+//               />
+//               <Route
+//                 path="rcr"
+//                 element={
+//                   <Suspense fallback={renderLoader()}>
+//                     <RCR />
+//                   </Suspense>
+//                 }
+//               />
+//             </Route>
+
+//             <Route
+//               path="coal_statement"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <CoalStatement />
+//                 </Suspense>
+//               }
+//             />
+//             <Route
+//               path="dclr"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <DCLR />
+//                 </Suspense>
+//               }
+//             />
+//           </Route>
+//           <Route
+//             path="coal_quality"
+//             element={
+//               <Suspense fallback={renderLoader()}>
+//                 <CoalQuality />
+//               </Suspense>
+//             }
+//           >
+//             <Route index element={<Navigate to="RQA" replace />} />
+
+//             <Route
+//               path="RQA"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <ReceiptQualityAnalysis />
+//                 </Suspense>
+//               }
+//             />
+
+//             <Route
+//               path="BQA"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <BunkerQualityAnalysis />
+//                 </Suspense>
+//               }
+//             />
+//             <Route
+//               path="CA"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <CoalAnalysis />
+//                 </Suspense>
+//               }
+//             />
+//             <Route
+//               path="GCVCA"
+//               element={
+//                 <Suspense fallback={renderLoader()}>
+//                   <CoalGCVAnalysis />
+//                 </Suspense>
+//               }
+//             />
+//           </Route>
+
+//           <Route
+//             path="performance_and_monitoring"
+//             element={
+//               <Suspense fallback={renderLoader()}>
+//                 <PnM />
+//               </Suspense>
+//             }
+//           />
+//         </Route>
+//         <Route
+//           path="/about"
+//           element={
+//             <Suspense fallback={renderLoader()}>
+//               <About />
+//             </Suspense>
+//           }
+//         />
+//         <Route
+//           path="/setting"
+//           element={
+//             <Suspense fallback={renderLoader()}>
+//               <Setting />
+//             </Suspense>
+//           }
+//         />
+
+//         <Route
+//           path="*"
+//           element={
+//             <Suspense fallback={renderLoader()}>
+//               <div onClick={() => {}}>
+//                 <NavLink to={"/home"}>Go to Home page</NavLink>
+//               </div>
+//             </Suspense>
+//           }
+//         />
+//         <Route
+//           path="/railform"
+//           element={
+//             <Suspense fallback={renderLoader()}>
+//               <Railform />
+//             </Suspense>
+//           }
+//         >
+//           <Route
+//             index
+//             element={
+//               <Suspense fallback={renderLoader()}>
+//                 <CreateID />
+//               </Suspense>
+//             }
+//           />
+//           <Route
+//             path=":id"
+//             element={
+//               <Suspense fallback={renderLoader()}>
+//                 <ID />
+//               </Suspense>
+//             }
+//           />
+//         </Route>
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// };
 
 export const RR_no = [63, 68, 9, 15, 100];
-
-const renderLoader = () => (
-  <div style={{ fontSize: "5vw", color: "white" }}>Loading...</div>
-);
 
 const ChangePermissionModal = ({ show, setshow }) => {
   const [permission, setPermission] = useState(permission_obj);
@@ -354,3 +641,69 @@ const permission_obj = {
 // return page !== "permissions" &&
 
 // }) */
+
+export const Spinner = (props) => (
+  <svg
+    id="L2"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
+    viewBox="-10 -10 120 120"
+    enableBackground="new 0 0 100 100"
+    xmlSpace="preserve"
+    width="20px"
+    height="20px"
+    {...props}
+  >
+    <circle
+      fill="none"
+      stroke="#000000"
+      strokeWidth={12}
+      strokeMiterlimit={10}
+      cx={50}
+      cy={50}
+      r={48}
+    />
+    <line
+      fill="none"
+      strokeLinecap="round"
+      stroke="#000000"
+      strokeWidth={12}
+      strokeMiterlimit={10}
+      x1={50}
+      y1={50}
+      x2={85}
+      y2={50.5}
+    >
+      <animateTransform
+        attributeName="transform"
+        dur="2s"
+        type="rotate"
+        from="0 50 50"
+        to="360 50 50"
+        repeatCount="indefinite"
+      />
+    </line>
+    <line
+      fill="none"
+      strokeLinecap="round"
+      stroke="#000000"
+      strokeWidth={12}
+      strokeMiterlimit={10}
+      x1={50}
+      y1={50}
+      x2={49.5}
+      y2={74}
+    >
+      <animateTransform
+        attributeName="transform"
+        dur="15s"
+        type="rotate"
+        from="0 50 50"
+        to="360 50 50"
+        repeatCount="indefinite"
+      />
+    </line>
+  </svg>
+);

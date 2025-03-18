@@ -2,7 +2,11 @@ import React from "react";
 import "./Home.scss";
 import { Link, Outlet, useNavigate } from "react-router";
 import Linx from "../Linx";
-const sidebaritemList = ["logistics_movement", "performance_and_monitoring"];
+const sidebaritemList = [
+  "logistics_movement",
+  "performance_and_monitoring",
+  "coal_quality",
+];
 const Home = () => {
   const navigate = useNavigate();
 

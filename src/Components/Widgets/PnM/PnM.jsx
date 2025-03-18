@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+
+// fetch("https://dummyjson.com/carts")
+//   .then((res) => res.json())
+//   .then(console.log);
 
 const PnM = () => {
   return (
