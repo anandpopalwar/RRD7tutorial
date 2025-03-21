@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 
 const renderLoader = () => (
   <div style={{ fontSize: "5vw", color: "white" }}>Loading...</div>
@@ -14,8 +14,8 @@ import {
   Route,
   RouterProvider,
   Routes,
-  useNavigation,
 } from "react-router";
+import Login from "./Components/Pages/Login";
 
 const Card = lazy(() =>
   import("./Components/Widgets/PnM/PnM").then((module) => ({
@@ -92,11 +92,9 @@ export default App2;
 
 const NavBar = () => {
   const [show, setshow] = useState(false);
-
   // const navigation = useNavigation();
-  // const isNavigating = Boolean(navigation.location);
-  // console.log(navigation, "navigation");
-  // console.log(isNavigating, "isNavigating");
+  // console.log(navigation);
+
   return (
     <div
       className="navbar"
@@ -113,421 +111,242 @@ const NavBar = () => {
           setshow,
         }}
       />
-      <Suspense fallback={renderLoader()}>
-        <Linx to="/home" className="mainlinks">
-          Home
-        </Linx>{" "}
-        |{" "}
-        <Linx to="/about" className="mainlinks">
-          About
-        </Linx>{" "}
-        |{" "}
-        <Linx to="/setting" className="mainlinks">
-          Setting
-        </Linx>
-        <div className="mainlinks" onClick={() => setshow((p) => !p)}>
-          Permissions {show ? "open" : "closed"}
-        </div>
-      </Suspense>
+      <Linx to="/Login" className="mainlinks">
+        Home
+      </Linx>{" "}
+      <Linx to="/home" className="mainlinks">
+        Home
+      </Linx>{" "}
+      |{" "}
+      <Linx to="/about" className="mainlinks">
+        About
+      </Linx>{" "}
+      |{" "}
+      <Linx to="/setting" className="mainlinks">
+        Setting
+      </Linx>
+      <div className="mainlinks" onClick={() => setshow((p) => !p)}>
+        Permissions {show ? "open" : "closed"}
+      </div>
     </div>
   );
 };
 
-const DocumentBody = () => {
-  const navigation = useNavigation();
-
-  console.log(navigation.state, "navigation");
-  return (
-    <>
-      <NavBar />
-      {navigation.state === "loading" && renderLoader()}
-      <Outlet />
-    </>
+const RouteConfig = () => {
+  const [isUserLoggedIn] = useState(
+    localStorage.getItem("isUserLoggedIn") || false
   );
-};
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route element={<DocumentBody />}>
-      <Route path="/" index element={<Navigate to="/home" replace />} />
-      <Route
-        path="/home"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Home />
-          </Suspense>
-        }
-      >
-        <Route index element={<Navigate to="logistics_movement" replace />} />
+  console.log(isUserLoggedIn, "isUserLoggedIn");
 
-        <Route
-          path="logistics_movement"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <LogisticsMovement />
-            </Suspense>
-          }
-        >
-          <Route index element={<Navigate to="coal_journey" replace />} />
+  useEffect(() => {}, [isUserLoggedIn]);
 
+  return (
+    <BrowserRouter>
+      <Suspense fallback={renderLoader()}>
+        <NavBar />
+
+        <Routes>
+          <Route path="/" index element={<Navigate to="/login" replace />} />
           <Route
-            path="coal_journey"
+            path="/login"
             element={
               <Suspense fallback={renderLoader()}>
-                <CoalJourneys />
+                <Login />
+              </Suspense>
+            }
+          ></Route>
+          <Route
+            path="/home"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <Home />
               </Suspense>
             }
           >
-            <Route index element={<Navigate to="road" replace />} />
+            <Route
+              index
+              element={<Navigate to="logistics_movement" replace />}
+            />
 
             <Route
-              path="road"
+              path="logistics_movement"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <Road />
+                  <LogisticsMovement />
                 </Suspense>
               }
-            />
+            >
+              <Route index element={<Navigate to="coal_journey" replace />} />
+
+              <Route
+                path="coal_journey"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <CoalJourneys />
+                  </Suspense>
+                }
+              >
+                <Route index element={<Navigate to="road" replace />} />
+
+                <Route
+                  path="road"
+                  element={
+                    <Suspense fallback={renderLoader()}>
+                      <Road />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="rail"
+                  element={
+                    <Suspense fallback={renderLoader()}>
+                      <Rail />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="rcr"
+                  element={
+                    <Suspense fallback={renderLoader()}>
+                      <RCR />
+                    </Suspense>
+                  }
+                />
+              </Route>
+
+              <Route
+                path="coal_statement"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <CoalStatement />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="dclr"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <DCLR />
+                  </Suspense>
+                }
+              />
+            </Route>
             <Route
-              path="rail"
+              path="coal_quality"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <Rail />
+                  <CoalQuality />
                 </Suspense>
               }
-            />
+            >
+              <Route index element={<Navigate to="RQA" replace />} />
+
+              <Route
+                path="RQA"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <ReceiptQualityAnalysis />
+                  </Suspense>
+                }
+              />
+
+              <Route
+                path="BQA"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <BunkerQualityAnalysis />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="CA"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <CoalAnalysis />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="GCVCA"
+                element={
+                  <Suspense fallback={renderLoader()}>
+                    <CoalGCVAnalysis />
+                  </Suspense>
+                }
+              />
+            </Route>
+
             <Route
-              path="rcr"
+              path="performance_and_monitoring"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <RCR />
+                  <PnM />
                 </Suspense>
               }
             />
           </Route>
-
           <Route
-            path="coal_statement"
+            path="/about"
             element={
               <Suspense fallback={renderLoader()}>
-                <CoalStatement />
+                <About />
               </Suspense>
             }
           />
           <Route
-            path="dclr"
+            path="/setting"
             element={
               <Suspense fallback={renderLoader()}>
-                <DCLR />
-              </Suspense>
-            }
-          />
-        </Route>
-        <Route
-          path="coal_quality"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <CoalQuality />
-            </Suspense>
-          }
-        >
-          <Route index element={<Navigate to="RQA" replace />} />
-
-          <Route
-            path="RQA"
-            element={
-              <Suspense fallback={renderLoader()}>
-                <ReceiptQualityAnalysis />
+                <Setting />
               </Suspense>
             }
           />
 
           <Route
-            path="BQA"
+            path="*"
             element={
               <Suspense fallback={renderLoader()}>
-                <BunkerQualityAnalysis />
+                <div onClick={() => {}}>
+                  <NavLink to={"/home"}>Go to Home page</NavLink>
+                </div>
               </Suspense>
             }
           />
           <Route
-            path="CA"
+            path="/railform"
             element={
               <Suspense fallback={renderLoader()}>
-                <CoalAnalysis />
+                <Railform />
               </Suspense>
             }
-          />
-          <Route
-            path="GCVCA"
-            element={
-              <Suspense fallback={renderLoader()}>
-                <CoalGCVAnalysis />
-              </Suspense>
-            }
-          />
-        </Route>
-
-        <Route
-          path="performance_and_monitoring"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <PnM />
-            </Suspense>
-          }
-        />
-      </Route>
-      <Route
-        path="/about"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <About />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/setting"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Setting />
-          </Suspense>
-        }
-      />
-
-      <Route
-        path="*"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <div onClick={() => {}}>
-              <NavLink to={"/home"}>Go to Home page</NavLink>
-            </div>
-          </Suspense>
-        }
-      />
-      <Route
-        path="/railform"
-        element={
-          <Suspense fallback={renderLoader()}>
-            <Railform />
-          </Suspense>
-        }
-      >
-        <Route
-          index
-          element={
-            <Suspense fallback={renderLoader()}>
-              <CreateID />
-            </Suspense>
-          }
-        />
-        <Route
-          path=":id"
-          element={
-            <Suspense fallback={renderLoader()}>
-              <ID />
-            </Suspense>
-          }
-        />
-      </Route>
-    </Route>
-  )
-);
-
-const RouteConfig = () => <RouterProvider router={router} />;
-
-// const RouteConfig = () => {
-//   return (
-//     <BrowserRouter>
-//       <NavBar />
-//       <Routes>
-//         <Route path="/" index element={<Navigate to="/home" replace />} />
-//         <Route
-//           path="/home"
-//           element={
-//             <Suspense fallback={renderLoader()}>
-//               <Home />
-//             </Suspense>
-//           }
-//         >
-//           <Route index element={<Navigate to="logistics_movement" replace />} />
-
-//           <Route
-//             path="logistics_movement"
-//             element={
-//               <Suspense fallback={renderLoader()}>
-//                 <LogisticsMovement />
-//               </Suspense>
-//             }
-//           >
-//             <Route index element={<Navigate to="coal_journey" replace />} />
-
-//             <Route
-//               path="coal_journey"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <CoalJourneys />
-//                 </Suspense>
-//               }
-//             >
-//               <Route index element={<Navigate to="road" replace />} />
-
-//               <Route
-//                 path="road"
-//                 element={
-//                   <Suspense fallback={renderLoader()}>
-//                     <Road />
-//                   </Suspense>
-//                 }
-//               />
-//               <Route
-//                 path="rail"
-//                 element={
-//                   <Suspense fallback={renderLoader()}>
-//                     <Rail />
-//                   </Suspense>
-//                 }
-//               />
-//               <Route
-//                 path="rcr"
-//                 element={
-//                   <Suspense fallback={renderLoader()}>
-//                     <RCR />
-//                   </Suspense>
-//                 }
-//               />
-//             </Route>
-
-//             <Route
-//               path="coal_statement"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <CoalStatement />
-//                 </Suspense>
-//               }
-//             />
-//             <Route
-//               path="dclr"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <DCLR />
-//                 </Suspense>
-//               }
-//             />
-//           </Route>
-//           <Route
-//             path="coal_quality"
-//             element={
-//               <Suspense fallback={renderLoader()}>
-//                 <CoalQuality />
-//               </Suspense>
-//             }
-//           >
-//             <Route index element={<Navigate to="RQA" replace />} />
-
-//             <Route
-//               path="RQA"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <ReceiptQualityAnalysis />
-//                 </Suspense>
-//               }
-//             />
-
-//             <Route
-//               path="BQA"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <BunkerQualityAnalysis />
-//                 </Suspense>
-//               }
-//             />
-//             <Route
-//               path="CA"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <CoalAnalysis />
-//                 </Suspense>
-//               }
-//             />
-//             <Route
-//               path="GCVCA"
-//               element={
-//                 <Suspense fallback={renderLoader()}>
-//                   <CoalGCVAnalysis />
-//                 </Suspense>
-//               }
-//             />
-//           </Route>
-
-//           <Route
-//             path="performance_and_monitoring"
-//             element={
-//               <Suspense fallback={renderLoader()}>
-//                 <PnM />
-//               </Suspense>
-//             }
-//           />
-//         </Route>
-//         <Route
-//           path="/about"
-//           element={
-//             <Suspense fallback={renderLoader()}>
-//               <About />
-//             </Suspense>
-//           }
-//         />
-//         <Route
-//           path="/setting"
-//           element={
-//             <Suspense fallback={renderLoader()}>
-//               <Setting />
-//             </Suspense>
-//           }
-//         />
-
-//         <Route
-//           path="*"
-//           element={
-//             <Suspense fallback={renderLoader()}>
-//               <div onClick={() => {}}>
-//                 <NavLink to={"/home"}>Go to Home page</NavLink>
-//               </div>
-//             </Suspense>
-//           }
-//         />
-//         <Route
-//           path="/railform"
-//           element={
-//             <Suspense fallback={renderLoader()}>
-//               <Railform />
-//             </Suspense>
-//           }
-//         >
-//           <Route
-//             index
-//             element={
-//               <Suspense fallback={renderLoader()}>
-//                 <CreateID />
-//               </Suspense>
-//             }
-//           />
-//           <Route
-//             path=":id"
-//             element={
-//               <Suspense fallback={renderLoader()}>
-//                 <ID />
-//               </Suspense>
-//             }
-//           />
-//         </Route>
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// };
+          >
+            <Route
+              index
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <CreateID />
+                </Suspense>
+              }
+            />
+            <Route
+              path=":id"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <ID />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+};
 
 export const RR_no = [63, 68, 9, 15, 100];
 
 const ChangePermissionModal = ({ show, setshow }) => {
-  const [permission, setPermission] = useState(permission_obj);
+  const [permission] = useState(permission_obj);
 
   const [userPermission, setUserPermission] = useState({
     home: {
@@ -620,6 +439,71 @@ const permission_obj = {
     permissions: { view: true, create: true, edit: true, delete: true },
   },
 };
+
+const _permission_route_config = [
+  {
+    path: "home",
+    element: <Home />,
+    children: [
+      {
+        path: "logistics_movement",
+        element: <LogisticsMovement />,
+        permissionPath: "home_page>logistics_movement",
+        children: [
+          {
+            path: "coal_journey",
+            element: <CoalJourneys />,
+            permissionPath: "home_page>logistics_movement>coal_journey",
+            children: [
+              {
+                path: "road",
+                element: <Road />,
+                permissionPath:
+                  "home_page>logistics_movement>coal_journey>road",
+              },
+              {
+                path: "rail",
+                element: <Rail />,
+                permissionPath:
+                  "home_page>logistics_movement>coal_journey>rail",
+              },
+              {
+                path: "rcr",
+                element: <RCR />,
+                permissionPath: "home_page>logistics_movement>coal_journey>rcr",
+              },
+            ],
+          },
+          {
+            path: "coal_statement",
+            element: <CoalStatement />,
+            permissionPath: "home_page>logistics_movement>coal_statement",
+          },
+          {
+            path: "dclr",
+            element: <DCLR />,
+            permissionPath: "home_page>logistics_movement>dclr",
+          },
+        ],
+      },
+      {
+        path: "performance_and_monitoring",
+        element: <PnM />,
+        permissionPath: "home_page>performance_and_monitering",
+      },
+    ],
+  },
+  {
+    path: "about",
+    element: <About />,
+    permissionPath: "about_page",
+  },
+  {
+    path: "setting",
+    element: <Setting />,
+    permissionPath: "setting_page",
+  },
+];
 
 // const ReturnRoutes = ({ path }) => {
 //   return;
