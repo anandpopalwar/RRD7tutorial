@@ -1,31 +1,10 @@
 import React from "react";
-import "./Home.scss";
-import { Outlet, useNavigate } from "react-router";
-import Linx from "../Linx";
-const sidebaritemList = [
-  "logistics_movement",
-  "performance_and_monitoring",
-  "coal_quality",
-];
-const Home = () => {
-  console.log("home>>>>>>>>>>>>");
-  return (
-    <div className="HomeParentContainer">
-      <div className="sidebar">
-        {sidebaritemList.map((page) => (
-          <Linx to={page} className={"sidebaritems"} key={page}>
-            {page.replaceAll("_", " ")}
-          </Linx>
-        ))}
-      </div>
-      <div className="mainbodycontainer">
-        <Outlet />
-      </div>
-    </div>
-  );
+
+const RouteConfig = () => {
+  return <div>RouteConfig</div>;
 };
 
-export default Home;
+export default RouteConfig;
 
 // let permissionList = {
 //   logistics_movement: [

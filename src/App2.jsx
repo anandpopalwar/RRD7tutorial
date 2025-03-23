@@ -14,8 +14,9 @@ import {
   Route,
   RouterProvider,
   Routes,
+  useNavigate,
 } from "react-router";
-import Login from "./Components/Pages/Login";
+import Login from "./Components/Pages/login";
 
 const Card = lazy(() =>
   import("./Components/Widgets/PnM/PnM").then((module) => ({
@@ -72,7 +73,9 @@ const ID = lazy(() =>
     default: module.ID,
   }))
 );
-const About = lazy(() => import("./Components/Pages/About"));
+import About from "./Components/Pages/About";
+import { getUserContext } from "./Components/Context/Context";
+// const About = lazy(() => import("./Components/Pages/About"));
 
 const Setting = lazy(() =>
   import("./Components/Pages/About").then((module) => ({
@@ -80,6 +83,7 @@ const Setting = lazy(() =>
   }))
 );
 
+// import Home from "./Components/Pages/Home";
 const Home = lazy(() => import("./Components/Pages/Home"));
 
 const App2 = () => (
@@ -92,8 +96,8 @@ export default App2;
 
 const NavBar = () => {
   const [show, setshow] = useState(false);
-  // const navigation = useNavigation();
-  // console.log(navigation);
+  const navigate = useNavigate();
+  const { logoutUser } = getUserContext();
 
   return (
     <div
@@ -111,8 +115,8 @@ const NavBar = () => {
           setshow,
         }}
       />
-      <Linx to="/Login" className="mainlinks">
-        Home
+      <Linx to="/login" className="mainlinks">
+        Login
       </Linx>{" "}
       <Linx to="/home" className="mainlinks">
         Home
@@ -125,6 +129,9 @@ const NavBar = () => {
       <Linx to="/setting" className="mainlinks">
         Setting
       </Linx>
+      <div className="mainlinks" onClick={logoutUser}>
+        Log out
+      </div>{" "}
       <div className="mainlinks" onClick={() => setshow((p) => !p)}>
         Permissions {show ? "open" : "closed"}
       </div>
@@ -132,13 +139,22 @@ const NavBar = () => {
   );
 };
 
+const PrivateRoute = ({ children }) => {
+  const { isUserLoggedIn } = getUserContext();
+  console.log(children, "children");
+  if (!isUserLoggedIn) return <Navigate to="/login" replace />;
+
+  return children;
+};
+
 const RouteConfig = () => {
-  const [isUserLoggedIn] = useState(
-    localStorage.getItem("isUserLoggedIn") || false
-  );
+  const { isUserLoggedIn } = getUserContext();
+
   console.log(isUserLoggedIn, "isUserLoggedIn");
 
-  useEffect(() => {}, [isUserLoggedIn]);
+  useEffect(() => {
+    console.log(isUserLoggedIn);
+  }, [isUserLoggedIn]);
 
   return (
     <BrowserRouter>
@@ -159,7 +175,10 @@ const RouteConfig = () => {
             path="/home"
             element={
               <Suspense fallback={renderLoader()}>
-                <Home />
+                <PrivateRoute>
+                  {console.log("HHHHHHHHHHHHHHHHHHH")}
+                  <Home />
+                </PrivateRoute>
               </Suspense>
             }
           >
@@ -172,7 +191,9 @@ const RouteConfig = () => {
               path="logistics_movement"
               element={
                 <Suspense fallback={renderLoader()}>
-                  <LogisticsMovement />
+                  <PrivateRoute>
+                    <LogisticsMovement />
+                  </PrivateRoute>
                 </Suspense>
               }
             >
@@ -182,7 +203,9 @@ const RouteConfig = () => {
                 path="coal_journey"
                 element={
                   <Suspense fallback={renderLoader()}>
-                    <CoalJourneys />
+                    <PrivateRoute>
+                      <CoalJourneys />
+                    </PrivateRoute>
                   </Suspense>
                 }
               >
@@ -192,7 +215,9 @@ const RouteConfig = () => {
                   path="road"
                   element={
                     <Suspense fallback={renderLoader()}>
-                      <Road />
+                      <PrivateRoute>
+                        <Road />
+                      </PrivateRoute>
                     </Suspense>
                   }
                 />
@@ -200,7 +225,9 @@ const RouteConfig = () => {
                   path="rail"
                   element={
                     <Suspense fallback={renderLoader()}>
-                      <Rail />
+                      <PrivateRoute>
+                        <Rail />
+                      </PrivateRoute>
                     </Suspense>
                   }
                 />
@@ -208,7 +235,9 @@ const RouteConfig = () => {
                   path="rcr"
                   element={
                     <Suspense fallback={renderLoader()}>
-                      <RCR />
+                      <PrivateRoute>
+                        <RCR />
+                      </PrivateRoute>
                     </Suspense>
                   }
                 />
@@ -217,26 +246,32 @@ const RouteConfig = () => {
               <Route
                 path="coal_statement"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <CoalStatement />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <CoalStatement />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="dclr"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <DCLR />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <DCLR />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
             </Route>
             <Route
               path="coal_quality"
               element={
-                <Suspense fallback={renderLoader()}>
-                  <CoalQuality />
-                </Suspense>
+                <PrivateRoute>
+                  <Suspense fallback={renderLoader()}>
+                    <CoalQuality />
+                  </Suspense>
+                </PrivateRoute>
               }
             >
               <Route index element={<Navigate to="RQA" replace />} />
@@ -244,34 +279,42 @@ const RouteConfig = () => {
               <Route
                 path="RQA"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <ReceiptQualityAnalysis />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <ReceiptQualityAnalysis />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
 
               <Route
                 path="BQA"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <BunkerQualityAnalysis />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <BunkerQualityAnalysis />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="CA"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <CoalAnalysis />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <CoalAnalysis />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
               <Route
                 path="GCVCA"
                 element={
-                  <Suspense fallback={renderLoader()}>
-                    <CoalGCVAnalysis />
-                  </Suspense>
+                  <PrivateRoute>
+                    <Suspense fallback={renderLoader()}>
+                      <CoalGCVAnalysis />
+                    </Suspense>
+                  </PrivateRoute>
                 }
               />
             </Route>
@@ -279,26 +322,33 @@ const RouteConfig = () => {
             <Route
               path="performance_and_monitoring"
               element={
-                <Suspense fallback={renderLoader()}>
-                  <PnM />
-                </Suspense>
+                <PrivateRoute>
+                  <Suspense fallback={renderLoader()}>
+                    <PnM />
+                  </Suspense>
+                </PrivateRoute>
               }
             />
           </Route>
+
           <Route
             path="/about"
             element={
-              <Suspense fallback={renderLoader()}>
-                <About />
-              </Suspense>
+              <PrivateRoute>
+                <Suspense fallback={renderLoader()}>
+                  <About />
+                </Suspense>
+              </PrivateRoute>
             }
           />
           <Route
             path="/setting"
             element={
-              <Suspense fallback={renderLoader()}>
-                <Setting />
-              </Suspense>
+              <PrivateRoute>
+                <Suspense fallback={renderLoader()}>
+                  <Setting />
+                </Suspense>
+              </PrivateRoute>
             }
           />
 
@@ -315,9 +365,11 @@ const RouteConfig = () => {
           <Route
             path="/railform"
             element={
-              <Suspense fallback={renderLoader()}>
-                <Railform />
-              </Suspense>
+              <PrivateRoute>
+                <Suspense fallback={renderLoader()}>
+                  <Railform />
+                </Suspense>
+              </PrivateRoute>
             }
           >
             <Route
@@ -448,48 +500,46 @@ const _permission_route_config = [
       {
         path: "logistics_movement",
         element: <LogisticsMovement />,
-        permissionPath: "home_page>logistics_movement",
+        permissionPath: "logistics_movement",
         children: [
           {
             path: "coal_journey",
             element: <CoalJourneys />,
-            permissionPath: "home_page>logistics_movement>coal_journey",
+            permissionPath: "coal_journey",
             children: [
               {
                 path: "road",
                 element: <Road />,
-                permissionPath:
-                  "home_page>logistics_movement>coal_journey>road",
+                permissionPath: "road",
               },
               {
                 path: "rail",
                 element: <Rail />,
-                permissionPath:
-                  "home_page>logistics_movement>coal_journey>rail",
+                permissionPath: "rail",
               },
               {
                 path: "rcr",
                 element: <RCR />,
-                permissionPath: "home_page>logistics_movement>coal_journey>rcr",
+                permissionPath: "rcr",
               },
             ],
           },
           {
             path: "coal_statement",
             element: <CoalStatement />,
-            permissionPath: "home_page>logistics_movement>coal_statement",
+            permissionPath: "coal_statement",
           },
           {
             path: "dclr",
             element: <DCLR />,
-            permissionPath: "home_page>logistics_movement>dclr",
+            permissionPath: "dclr",
           },
         ],
       },
       {
         path: "performance_and_monitoring",
         element: <PnM />,
-        permissionPath: "home_page>performance_and_monitering",
+        permissionPath: "performance_and_monitering",
       },
     ],
   },
@@ -504,6 +554,19 @@ const _permission_route_config = [
     permissionPath: "setting_page",
   },
 ];
+
+const D = (parentarray, parentpath = "") => {
+  for (let i = 0; i < parentarray.length; i++) {
+    let this_path = parentpath
+      ? parentpath + ">" + parentarray[i]["path"]
+      : parentarray[i]["path"];
+
+    parentarray[i].children
+      ? D(parentarray[i].children, this_path)
+      : console.log(this_path);
+  }
+};
+D(_permission_route_config);
 
 // const ReturnRoutes = ({ path }) => {
 //   return;
