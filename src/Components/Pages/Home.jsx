@@ -8,7 +8,6 @@ const sidebaritemList = [
   "coal_quality",
 ];
 const Home = () => {
-  console.log("home>>>>>>>>>>>>");
   return (
     <div className="HomeParentContainer">
       <div className="sidebar">

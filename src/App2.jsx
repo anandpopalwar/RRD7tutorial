@@ -141,7 +141,6 @@ const NavBar = () => {
 
 const PrivateRoute = ({ children }) => {
   const { isUserLoggedIn } = getUserContext();
-  console.log(children, "children");
   if (!isUserLoggedIn) return <Navigate to="/login" replace />;
 
   return children;
@@ -170,13 +169,24 @@ const RouteConfig = () => {
                 <Login />
               </Suspense>
             }
-          ></Route>
+          />
+          {/* <Route
+            path="*"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <div onClick={() => {}}>
+                  <NavLink to={"/home"}>Go to Home page</NavLink>
+                </div>
+              </Suspense>
+            }
+          /> */}
+        </Routes>
+        <Routes>
           <Route
             path="/home"
             element={
               <Suspense fallback={renderLoader()}>
                 <PrivateRoute>
-                  {console.log("HHHHHHHHHHHHHHHHHHH")}
                   <Home />
                 </PrivateRoute>
               </Suspense>
@@ -353,16 +363,6 @@ const RouteConfig = () => {
           />
 
           <Route
-            path="*"
-            element={
-              <Suspense fallback={renderLoader()}>
-                <div onClick={() => {}}>
-                  <NavLink to={"/home"}>Go to Home page</NavLink>
-                </div>
-              </Suspense>
-            }
-          />
-          <Route
             path="/railform"
             element={
               <PrivateRoute>
@@ -425,8 +425,6 @@ const ChangePermissionModal = ({ show, setshow }) => {
       },
     },
   });
-
-  console.log(userPermission, "userPermission");
 
   return (
     <div
@@ -494,80 +492,122 @@ const permission_obj = {
 
 const _permission_route_config = [
   {
-    path: "home",
+    path: "/home",
     element: <Home />,
+    permission_path: "home_page",
+
     children: [
       {
         path: "logistics_movement",
         element: <LogisticsMovement />,
-        permissionPath: "logistics_movement",
+        permission_path: "logistics_movement_widget",
         children: [
           {
             path: "coal_journey",
             element: <CoalJourneys />,
-            permissionPath: "coal_journey",
+            permission_path: "coal_journey_page",
             children: [
               {
                 path: "road",
                 element: <Road />,
-                permissionPath: "road",
+                permission_path: "road_tab",
               },
               {
                 path: "rail",
                 element: <Rail />,
-                permissionPath: "rail",
+                permission_path: "rail_tab",
               },
               {
                 path: "rcr",
                 element: <RCR />,
-                permissionPath: "rcr",
+                permission_path: "rcr_tab",
               },
             ],
           },
           {
             path: "coal_statement",
             element: <CoalStatement />,
-            permissionPath: "coal_statement",
+            permission_path: "coal_statement_page",
           },
           {
             path: "dclr",
             element: <DCLR />,
-            permissionPath: "dclr",
+            permission_path: "dclr_page",
           },
         ],
       },
       {
         path: "performance_and_monitoring",
         element: <PnM />,
-        permissionPath: "performance_and_monitering",
+        permission_path: "performance_and_monitering_widget",
+      },
+      {
+        path: "coal_quality",
+        permission_path: "coal_quality_widget",
+        element: <CoalQuality />,
+        children: [
+          {
+            path: "RQA",
+            element: <PnM />,
+            permission_path: "RQA_page",
+          },
+          {
+            path: "BQA",
+            element: <PnM />,
+            permission_path: "BQA_page",
+          },
+          {
+            path: "CA",
+            element: <PnM />,
+            permission_path: "CA_page",
+          },
+        ],
       },
     ],
   },
   {
-    path: "about",
+    path: "/about",
     element: <About />,
-    permissionPath: "about_page",
+    permission_path: "about_page",
   },
   {
-    path: "setting",
+    path: "/setting",
     element: <Setting />,
-    permissionPath: "setting_page",
+    permission_path: "setting_page",
   },
 ];
 
-const D = (parentarray, parentpath = "") => {
+const D = (parentarray, parentpath = "", ParentChildren) => {
   for (let i = 0; i < parentarray.length; i++) {
     let this_path = parentpath
-      ? parentpath + ">" + parentarray[i]["path"]
-      : parentarray[i]["path"];
+      ? parentpath + ">" + parentarray[i]["permission_path"]
+      : parentarray[i]["permission_path"];
+    let this_ele = <ParentChildren>{parentarray[i].element}</ParentChildren>;
 
     parentarray[i].children
-      ? D(parentarray[i].children, this_path)
-      : console.log(this_path);
+      ? D(parentarray[i].children, this_path, this_ele)
+      : RenderEle(this_path, this_ele);
   }
 };
+function RenderEle(path, ele) {
+  console.log(path);
+  console.dirxml(ele);
+}
+
 D(_permission_route_config);
 
+// const F = (parentarray, parentpath = "") => {
+//   for (let i = 0; i < parentarray.length; i++) {
+//     let this_path = parentpath
+//       ? parentpath + ">" + parentarray[i]["path"]
+//       : parentarray[i]["path"];
+
+//     parentarray[i].children
+//       ? F(parentarray[i].children, this_path)
+//       : console.log(this_path);
+//   }
+// };
+// F(_permission_route_config);
 // const ReturnRoutes = ({ path }) => {
 //   return;
 //   <>
